@@ -22,7 +22,10 @@ body {
 
 canvas#field {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
@@ -66,4 +69,55 @@ canvas#field {
 .label p em {
   font-style: normal;
   color: var(--jade);
+}
+
+.panel {
+  position: fixed;
+  top: clamp(1.25rem, 4vw, 2rem);
+  right: clamp(1.25rem, 4vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid rgba(143, 162, 148, 0.25);
+  border-radius: 10px;
+  background: rgba(9, 12, 10, 0.72);
+  backdrop-filter: blur(6px);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.panel-row {
+  display: grid;
+  grid-template-columns: 4.6rem 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.panel-row label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel-row select {
+  font-family: inherit;
+  font-size: 0.72rem;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(143, 162, 148, 0.3);
+  border-radius: 6px;
+  padding: 0.3rem 0.4rem;
+}
+
+.panel-row input[type="range"] {
+  width: 100%;
+  accent-color: var(--ember);
+}
+
+.panel-row select:focus-visible,
+.panel-row input:focus-visible {
+  outline: 2px solid var(--jade);
+  outline-offset: 2px;
 }

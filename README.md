@@ -47,16 +47,50 @@ full-bleed, general-purpose background with a slow density drift instead).
 
 ## Using it
 
-Everything lives in `main.js` and targets a `<canvas id="field">` — copy
-both it and `style.css` into your own page, or lift the script wholesale:
+`main.js` exposes a single global, `PerlinCanvas.mount(canvas, options)`.
+Point it at any canvas element (sized by CSS however you like — full-page,
+a card, a hero banner) and it sizes itself to that canvas's box and redraws
+on resize:
 
 ```html
-<canvas id="field"></canvas>
+<canvas id="field" style="position: fixed; inset: 0; width: 100%; height: 100%"></canvas>
 <script src="main.js"></script>
+<script>
+  var field = PerlinCanvas.mount(document.getElementById('field'), {
+    hues: ['#ff5a1f', '#f4c430', '#2fb88a'],
+    cellSize: 11,
+    speed: 1,
+    density: 1,
+  });
+</script>
 ```
 
-It sizes itself to the window and redraws on resize, so it works as a
-full-page background as-is.
+`mount()` returns a small handle:
+
+| Method | Does |
+| --- | --- |
+| `setOptions(partial)` | Merge in new options and redraw immediately — safe to call every frame from a slider's `input` event. |
+| `stop()` / `start()` | Pause and resume the animation loop. |
+| `destroy()` | Stop and drop the window resize listener. |
+
+### Options
+
+| Option | Default | Controls |
+| --- | --- | --- |
+| `hues` | ember → jade, 7 stops | The color path a cell's hue is drawn from. Hex strings or `[r,g,b]` triples, in visual order. |
+| `dark` | `'#080907'` | The unlit floor color cells ramp up from. |
+| `pale` | `'#ffeed6'` | The hottest highlight color cells ramp up to. |
+| `cellSize` | `11` | CSS px per lamp cell — smaller reads finer-grained, larger reads chunkier. |
+| `speed` | `1` | Multiplies elapsed time before it reaches the noise fields — pacing, not frame rate. `2` is twice as fast, `0.5` half as fast. |
+| `density` | `1` | Multiplies how many cells are eligible to light up. Below `1` is sparser, above `1` fuller (it saturates past roughly `1.6`). |
+| `fps` | `24` | Frames per second the draw loop targets. |
+| `seed` | `20260911` | Seeds the noise lattice — change it for a different arrangement of where cells tend to cluster. |
+| `respectReducedMotion` | `true` | Freeze on a single frame when the OS requests reduced motion. |
+
+The demo page (`index.html`) wires all of these except `dark`/`pale`/`fps`/`seed`
+up to a small control panel in the top-right corner, with three palette
+presets (Ember/Jade, Cobalt/Orchid, Rose/Gold) — open it locally or via the
+live demo link above and play with the sliders.
 
 ### As a desktop wallpaper
 
@@ -68,13 +102,6 @@ takes one extra step:
   at `index.html` directly, or
 - Screen-record a loop, or grab a still frame you like, and use that as a
   conventional static wallpaper.
-
-## Coming soon
-
-Right now the palette, cell size, animation speed, and density are constants
-at the top of `main.js`. Next up: pulling those into an options object so
-the colors, pacing, and density can be configured without editing the noise
-code itself.
 
 ## License
 

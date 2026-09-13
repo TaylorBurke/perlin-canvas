@@ -29,6 +29,10 @@
     // the color path a cell's hue is drawn from, lit end to lit end —
     // hex strings or [r,g,b] triples, in visual order along the path
     hues: ['#ff5a1f', '#ff9a2e', '#f4c430', '#b5d93c', '#6fcf52', '#2fb88a', '#1e8a6e'],
+    // biases which end of the hue path shows up more often: 1 is neutral,
+    // <1 skews toward the path's far end (e.g. jade), >1 skews toward its
+    // start (e.g. ember) — a gamma curve applied to the hue-noise value
+    hueGamma: 1,
     // the unlit floor and the hottest highlight a cell ramps between
     dark: '#080907',
     pale: '#ffeed6',
@@ -155,6 +159,7 @@
           v = Math.ceil(v * 6) / 6; // six brightness steps: lamps pop on, they don't fade in
           var hv = (fbm(x / 210 + 11.7, y / 210 + 3.9, tk * 0.06) + 1) / 2;
           hv = Math.min(1, Math.max(0, (hv - 0.5) * 1.9 + 0.5));
+          hv = Math.pow(hv, opts.hueGamma); // bias toward one end of the color path
           hv = Math.floor(hv * 7) / 6; // seven hue bands along the color path
           var c = ramp(v, hueAt(hv));
           if (v > 0.5) { // hot lamps bloom: a soft halo under the core
